@@ -1,0 +1,18 @@
+---
+
+- name: Delete k3s if already present
+  file:
+    path: /usr/local/bin/k3s
+    state: absent
+
+- name: Download k3s 
+  get_url:
+      url: https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/k3s
+      dest: /usr/local/bin/k3s
+      owner: root
+      group: root
+      mode: 755
+#  when: ( ansible_facts.userspace_architecture == "x86_64" )
+  when: ( ansible_facts.architecture == "x86_64" )
+
+
