@@ -1,7 +1,7 @@
 ---
 
 - name: Install docker-registry
-  hosts: registry
+  hosts: <your_host>
   user: $user
 
   vars_files:
