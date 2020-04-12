@@ -1,0 +1,7 @@
+# Emply by default. We can replace it with something that will be
+# passed to the mount command, but needs to be defined even when we
+# dont.
+mount_options_with_flag:
+
+disk_device_path: "/dev/sdb"
+mount_dir: /data

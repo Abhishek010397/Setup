@@ -1,0 +1,41 @@
+---
+- name: Update packages
+  become: true
+  yum: name=* state=latest update_cache=true
+
+# https://github.com/docker/docker/issues/15498
+- name: Install docker selinux
+  yum: name=docker-selinux state=present
+
+- name: Install docker
+  shell: curl -sSL https://get.docker.com/ | sh
+
+- name: Create docker images dir
+  file: path={{docker_images_dir}} state=directory
+
+- name: Config docker to use images dir
+  lineinfile: dest=/etc/default/docker line="DOCKER_OPTS="-g {{docker_images_dir}}"
+
+- name: Start docker
+  become: true
+  service: name=docker state=started
+
+- name: Create cert folder
+  become: true
+  file: path=/etc/certs state=directory
+
+- name: Copy certificates
+  become: true
+  copy: src={{ item }} dest=/etc/certs/{{ item }}
+  with_items:
+    - domain.crt
+    - domain.key
+
+- name: Create auth folder
+  become: true
+  file: path=/etc/dockerauth state=directory
+
+- name: Copy auth
+  become: true
+  copy: src=htpasswd dest=/etc/dockerauth/htpasswd
+

@@ -1,0 +1,27 @@
+---
+- name: Check if container is running
+  become: true
+  shell: docker ps
+  register: containers
+
+- name: Stop running container
+  become: true
+  shell: "{{ item }}"
+  with_items:
+    - docker stop {{ registry_container_name }}
+    - docker rm {{ registry_container_name }}
+  when: containers.stdout.find(registry_container_name) != -1
+
+- name: Deploy registry
+  become: true
+  shell: >
+    docker run -d -p 5000:5000 --restart=always --name {{ registry_container_name }}
+    -v /etc/dockerauth:/auth
+    -v /data/docker-registry:/var/lib/registry
+    -e "REGISTRY_AUTH=htpasswd"
+    -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm"
+    -v /etc/certs:/certs
+    -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+    -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt
+    -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key
+    registry:2
