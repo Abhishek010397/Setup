@@ -1,0 +1,10 @@
+---
+
+- hosts: <your_hosts>
+  roles:
+    - role: mount-disk
+      disk_device_path: "/dev/sdb"
+      mount_dir: /data
+      mount_options: "defaults,auto,noatime,noexec"
+    - role: provision
+      docker_images_dir: /data/docker
