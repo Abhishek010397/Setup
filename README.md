@@ -30,3 +30,11 @@ To get access to your **Kubernetes** cluster just
 ```bash
 scp debian@master_pi:~/kube/config ~/.kube/config
 ```
+
+## Docker-Registry
+
+to setup docker registry use :-
+  
+                 deploy.yml
+                 provision.yml
+                and roles folder
